@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#76563f">
-<title>Usahaku Pro — Business Management</title>
+<title>Usahaku Pro — Manajemen Usaha</title>
 <style>
 :root{--cream:#f8f3eb;--paper:#fffdf9;--beige:#eadbc9;--tan:#c6a88d;--coksu:#a98263;--brown:#76563f;--dark:#49372b;--muted:#938477;--line:#eadfd3;--green:#60785d;--red:#a65c50}
 *{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--dark);font-family:Arial,sans-serif;padding-bottom:40px}
@@ -46,7 +46,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:18px}
 </style>
 </head>
 <body>
-<header><div class="wrap"><div class="brand">USAHAKU PRO • BUSINESS MANAGEMENT</div><h1>Usahaku Pro</h1><p>Kelola usaha, hitung modal, dan pantau produk dalam satu aplikasi.</p></div></header>
+<header><div class="wrap"><div class="brand">USAHAKU PRO • MANAJEMEN USAHA</div><h1>Usahaku Pro</h1><p>Kelola usaha, hitung modal, dan pantau produk dalam satu aplikasi.</p></div></header>
 <main>
 <section id="authCard" class="card">
  <h2>Akun Usahaku Pro</h2><div class="sub">Masuk atau buat akun pribadi agar resep tersimpan online dan bisa dipulihkan saat ganti HP.</div>
@@ -131,6 +131,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:18px}
     <div class="field"><label>Shopee (%)</label><input id="feeShopee" type="number" min="0" max="99" step=".01" value="24.67" oninput="calculate()"></div>
     <div class="field"><label>ShopeeFood (%)</label><input id="feeFood" type="number" min="0" max="99" step=".01" value="25" oninput="calculate()"></div>
    </div>
+   <div class="field"><label>Target markup / keuntungan dari HPP (%)</label><input id="targetMarkup" type="number" min="0" max="1000" step="1" value="50" oninput="calculate()"></div>
    <p class="small">Harga marketplace dihitung agar penerimaan setelah potongan setara dengan harga offline. Belum termasuk diskon tambahan yang ditanggung penjual.</p>
   </section>
   <section class="card">
@@ -138,8 +139,16 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:18px}
    <div class="tablewrap"><table><thead><tr><th>Markup</th><th>Offline</th><th>Shopee</th><th>ShopeeFood</th></tr></thead><tbody id="hargaTable"></tbody></table></div>
   </section>
   <section class="card">
-   <h2>07. Simpan Resep</h2><div class="sub">Simpan resep ke akun cloud. Resep dapat dibuka dan diedit kembali melalui menu Buka Resep.</div>
-   <div class="field"><label>Nama resep / produk</label><input id="namaResep" placeholder="Contoh: Dimsum Ayam 16 pcs"></div>
+   <h2>07. Data Produk</h2><div class="sub">Bagian ini dibuat fleksibel untuk kuliner, fashion, reseller, toko sembako, kerajinan, dan berbagai jenis usaha.</div>
+   <div class="field"><label>Nama produk</label><input id="namaResep" placeholder="Contoh: Dimsum Ayam / Kaos Polos / Paket Sembako"></div>
+   <div class="grid">
+    <div class="field"><label>Kategori usaha</label><select id="kategoriProduk" style="width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fffdfa;color:var(--dark);font-size:14px"><option value="Kuliner">Kuliner</option><option value="Fashion">Fashion</option><option value="Reseller / Dropship">Reseller / Dropship</option><option value="Toko / Retail">Toko / Retail</option><option value="Kerajinan">Kerajinan</option><option value="Jasa">Jasa</option><option value="Kecantikan">Kecantikan</option><option value="Lainnya">Lainnya</option></select></div>
+    <div class="field"><label>Kode produk / SKU</label><input id="kodeProduk" placeholder="Contoh: PRD-001"></div>
+   </div>
+   <div class="field"><label>Satuan jual</label><input id="satuanProduk" placeholder="Contoh: pcs, porsi, kg, pasang, paket, jasa"></div>
+  </section>
+  <section class="card">
+   <h2>08. Simpan Produk</h2><div class="sub">Simpan data produk dan perhitungan biaya ke akun cloud. Produk dapat dibuka dan diedit kembali.</div>
    <div id="saveMessage" class="notice hidden"></div>
    <button class="primary" id="saveButton" onclick="saveRecipe()">Simpan Resep ke Cloud</button>
    <button class="outline hidden" id="cancelEdit" style="width:100%;margin-top:8px" onclick="newRecipe()">Batalkan edit / resep baru</button>
@@ -154,7 +163,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:18px}
   </section>
  </div>
 </div>
-<footer>USAHAKU PRO • BUSINESS MANAGEMENT</footer>
+<footer>USAHAKU PRO • MANAJEMEN USAHA</footer>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -177,6 +186,9 @@ const roundPrice = n => Math.ceil(n / 100) * 100;
 
 function initSupabase(){
  if(!window.supabase){showAuthMessage("Library koneksi gagal dimuat. Periksa koneksi internet lalu muat ulang halaman.",true);return;}
+ if(SUPABASE_URL.startsWith("MASUKKAN_") || SUPABASE_ANON_KEY.startsWith("MASUKKAN_")){
+  showAuthMessage("Aplikasi belum dihubungkan ke Supabase. Isi SUPABASE_URL dan SUPABASE_ANON_KEY di bagian konfigurasi kode.",true);return;
+ }
  db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
  db.auth.getSession().then(({data,error})=>{
   if(error){showAuthMessage(error.message,true);return;}
@@ -201,7 +213,7 @@ function showSaveMessage(message,error=false){
  el.className=message?"notice"+(error?" error":""):"notice hidden";
 }
 async function authenticate(){
- if(!db){showAuthMessage("Koneksi Supabase belum tersedia.",true);return;}
+ if(!db){showAuthMessage("Hubungkan Supabase terlebih dahulu dengan mengisi URL dan key.",true);return;}
  const email=$("authEmail").value.trim();
  const password=$("authPassword").value;
  if(!email||!password){showAuthMessage("Isi email dan password terlebih dahulu.",true);return;}
@@ -291,10 +303,14 @@ function calculate(){
  $("rekapPacking").textContent=rupiah(packing);$("jumlahBiaya").textContent=rupiah(total);
  $("hpp").textContent=jumlah>0?rupiah(hpp):"Isi jumlah produk";
  const fs=num("feeShopee")/100,ff=num("feeFood")/100,tbody=$("hargaTable");tbody.innerHTML="";
- [30,50,70].forEach(m=>{
+ const markupRows=[30,50,70];
+ const customMarkup=num("targetMarkup");
+ if(!markupRows.includes(customMarkup))markupRows.push(customMarkup);
+ markupRows.sort((a,b)=>a-b);
+ markupRows.forEach(m=>{
   const offline=roundPrice(hpp*(1+m/100)),shopee=fs<1?roundPrice(offline/(1-fs)):0,food=ff<1?roundPrice(offline/(1-ff)):0;
   const tr=document.createElement("tr");
-  [m+"%",rupiah(offline),rupiah(shopee),rupiah(food)].forEach(t=>{const td=document.createElement("td");td.textContent=t;tr.append(td);});
+  [m+"%"+(m===customMarkup?" • target":""),rupiah(offline),rupiah(shopee),rupiah(food)].forEach(t=>{const td=document.createElement("td");td.textContent=t;tr.append(td);});
   tbody.append(tr);
  });
  return {totalBahan,tenaga,utilitas,penyusutan,totalOper,packing,total,jumlah,hpp};
@@ -303,7 +319,9 @@ function recipePayload(){
  return {
   ingredients:ingredients.map(x=>({nama:x.nama,beli:x.beli,harga:x.harga,pakai:x.pakai})),
   packing:$("packing").value,jumlah:$("jumlah").value,
-  feeShopee:$("feeShopee").value,feeFood:$("feeFood").value
+  feeShopee:$("feeShopee").value,feeFood:$("feeFood").value,
+  kategoriProduk:$("kategoriProduk").value,kodeProduk:$("kodeProduk").value,
+  satuanProduk:$("satuanProduk").value,targetMarkup:$("targetMarkup").value
  };
 }
 async function saveRecipe(){
@@ -311,8 +329,7 @@ async function saveRecipe(){
  const name=$("namaResep").value.trim();
  if(!name){showSaveMessage("Isi nama resep terlebih dahulu.",true);return;}
  if(!num("jumlah")){showSaveMessage("Jumlah produk harus lebih dari 0.",true);return;}
- const payload=recipePayload();
- calculate();
+ const payload=recipePayload();const summary=calculate();
  $("saveButton").disabled=true;
  try{
   let result;
@@ -325,7 +342,7 @@ async function saveRecipe(){
   editingId=result.data.id;
   $("saveButton").textContent="Simpan Perubahan";
   $("cancelEdit").classList.remove("hidden");
-  showSaveMessage("Resep berhasil disimpan ke cloud. Kamu bisa membukanya kembali dari menu Produk & Resep.");
+  showSaveMessage("Resep berhasil disimpan ke cloud. Kamu bisa membukanya kembali dari menu Buka Resep.");
   await loadRecipes();
  }catch(e){showSaveMessage("Gagal menyimpan: "+(e.message||"Periksa koneksi dan konfigurasi database."),true);}
  finally{$("saveButton").disabled=false;}
@@ -342,7 +359,11 @@ async function loadRecipes(){
   const box=document.createElement("div");box.className="recipe";
   const row=document.createElement("div");row.className="row";
   const info=document.createElement("div");const name=document.createElement("div");name.className="recipe-name";name.textContent=r.name;
-  const meta=document.createElement("div");meta.className="recipe-meta";meta.textContent="Diperbarui: "+new Date(r.updated_at||r.created_at).toLocaleString("id-ID");
+  const meta=document.createElement("div");meta.className="recipe-meta";
+  const category=r.data?.kategoriProduk||"Produk lama";
+  const sku=r.data?.kodeProduk?" • SKU: "+r.data.kodeProduk:"";
+  const unit=r.data?.satuanProduk?" • Satuan: "+r.data.satuanProduk:"";
+  meta.textContent=category+sku+unit+" • Diperbarui: "+new Date(r.updated_at||r.created_at).toLocaleString("id-ID");
   info.append(name,meta);
   const open=document.createElement("button");open.className="secondary";open.textContent="Buka";open.onclick=()=>openRecipe(r);
   row.append(info,open);box.append(row);
@@ -357,6 +378,10 @@ function openRecipe(r){
  if(!ingredients.length)ingredients=[{id:nextId++,nama:"",beli:"",harga:"",pakai:""}];
  $("packing").value=r.data.packing??0;$("jumlah").value=r.data.jumlah??20;
  $("feeShopee").value=r.data.feeShopee??24.67;$("feeFood").value=r.data.feeFood??25;
+ $("kategoriProduk").value=r.data.kategoriProduk||"Kuliner";
+ $("kodeProduk").value=r.data.kodeProduk||"";
+ $("satuanProduk").value=r.data.satuanProduk||"pcs";
+ $("targetMarkup").value=r.data.targetMarkup??50;
  renderIngredients();$("saveButton").textContent="Simpan Perubahan";$("cancelEdit").classList.remove("hidden");
  showSaveMessage("Resep dibuka. Kamu dapat mengubah data lalu tekan Simpan Perubahan.");
  showPage("calc");window.scrollTo({top:0,behavior:"smooth"});
@@ -369,7 +394,9 @@ async function deleteRecipe(id,name){
 }
 function newRecipe(){
  editingId=null;$("namaResep").value="";$("packing").value=0;$("jumlah").value=20;
- $("feeShopee").value=24.67;$("feeFood").value=25;ingredients=[];nextId=1;addIngredient();
+ $("feeShopee").value=24.67;$("feeFood").value=25;
+ $("kategoriProduk").value="Kuliner";$("kodeProduk").value="";$("satuanProduk").value="";
+ $("targetMarkup").value=50;ingredients=[];nextId=1;addIngredient();
  $("saveButton").textContent="Simpan Resep ke Cloud";$("cancelEdit").classList.add("hidden");showSaveMessage("");
 }
 function resetForm(){if(!confirm("Kosongkan kalkulator? Resep yang sudah tersimpan tidak akan terhapus."))return;newRecipe();calculate();}

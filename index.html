@@ -1,10 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#76563f">
-<title>Coksu HPP — Personal Cloud</title>
+<title>Usahaku Pro — Business Management</title>
 <style>
 :root{--cream:#f8f3eb;--paper:#fffdf9;--beige:#eadbc9;--tan:#c6a88d;--coksu:#a98263;--brown:#76563f;--dark:#49372b;--muted:#938477;--line:#eadfd3;--green:#60785d;--red:#a65c50}
 *{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--dark);font-family:Arial,sans-serif;padding-bottom:40px}
@@ -26,13 +27,29 @@ button{border:0;border-radius:10px;padding:12px 14px;font-weight:bold;font-size:
 .small{font-size:11px;line-height:1.5;color:var(--muted)}.pill{font-size:10px;background:#e9f0e6;color:#526b4d;padding:5px 8px;border-radius:20px}
 footer{text-align:center;color:var(--muted);font-size:11px;padding:18px}
 @media(max-width:390px){.card{padding:14px}.grid{gap:7px}h1{font-size:27px}}
+.app-nav{grid-template-columns:1fr 1fr 1fr;margin-top:14px}
+.dashboard-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.metric{background:#f5eee5;border:1px solid var(--line);border-radius:13px;padding:14px;min-width:0}
+.metric span,.metric small{display:block;color:var(--muted);font-size:11px;line-height:1.4}
+.metric strong{display:block;font:26px Georgia,serif;color:var(--brown);margin:8px 0}
+.metric .metric-status{font-size:20px;color:var(--green)}
+.quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
+.feature-list{display:flex;flex-direction:column;gap:0}
+.feature-item{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}
+.feature-item:last-child{border:0}
+.feature-number{font:17px Georgia,serif;color:var(--coksu);min-width:25px}
+.feature-item div{flex:1;min-width:0}
+.feature-item b,.feature-item small{display:block}
+.feature-item b{font-size:12px}
+.feature-item small{font-size:10px;color:var(--muted);margin-top:3px}
+@media(max-width:360px){.quick-actions{grid-template-columns:1fr}.feature-item .pill{font-size:9px;padding:4px 6px}}
 </style>
 </head>
 <body>
-<header><div class="wrap"><div class="brand">CO KSU • BUSINESS TOOLS</div><h1>Kalkulator HPP</h1><p>Hitung modal, simpan resep, buka kembali kapan saja.</p></div></header>
+<header><div class="wrap"><div class="brand">USAHAKU PRO • BUSINESS MANAGEMENT</div><h1>Usahaku Pro</h1><p>Kelola usaha, hitung modal, dan pantau produk dalam satu aplikasi.</p></div></header>
 <main>
 <section id="authCard" class="card">
- <h2>Akun Coksu HPP</h2><div class="sub">Masuk atau buat akun pribadi agar resep tersimpan online dan bisa dipulihkan saat ganti HP.</div>
+ <h2>Akun Usahaku Pro</h2><div class="sub">Masuk atau buat akun pribadi agar resep tersimpan online dan bisa dipulihkan saat ganti HP.</div>
  <div class="tabs"><button id="loginTab" class="tab active" type="button" onclick="setAuthMode('login')">Masuk</button><button id="signupTab" class="tab" type="button" onclick="setAuthMode('signup')">Daftar akun</button></div>
  <div class="field"><label>Email</label><input id="authEmail" type="email" autocomplete="email" placeholder="nama@email.com"></div>
  <div class="field"><label>Password</label><input id="authPassword" type="password" autocomplete="current-password" placeholder="Minimal 6 karakter"></div>
@@ -46,9 +63,39 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:18px}
   <div class="row"><div><h2>Halo, pemilik usaha!</h2><div id="userEmail" class="small"></div></div><button class="outline" onclick="logout()">Keluar</button></div>
   <div class="notice ok">Cloud aktif. Resep yang disimpan akan terhubung ke akun ini.</div>
  </section>
- <div class="tabs"><button id="calcTab" class="tab active" onclick="showPage('calc')">Kalkulator HPP</button><button id="listTab" class="tab" onclick="showPage('list')">Buka Resep</button></div>
+ <nav class="tabs app-nav" aria-label="Navigasi utama">
+  <button id="dashboardTab" class="tab active" onclick="showPage('dashboard')">Dashboard</button>
+  <button id="calcTab" class="tab" onclick="showPage('calc')">Kalkulator HPP</button>
+  <button id="listTab" class="tab" onclick="showPage('list')">Produk & Resep</button>
+ </nav>
 
- <div id="calcPage">
+ <div id="dashboardPage">
+  <section class="card">
+   <h2>Dashboard Usaha</h2><div class="sub">Ringkasan awal pengelolaan usaha kamu. Data akan bertambah seiring fitur berikutnya diaktifkan.</div>
+   <div class="dashboard-grid">
+    <div class="metric"><span>Produk / resep tersimpan</span><strong id="dashRecipeCount">0</strong><small>Data di akun cloud</small></div>
+    <div class="metric"><span>Status penyimpanan</span><strong class="metric-status">Aktif</strong><small>Terhubung ke Supabase</small></div>
+   </div>
+   <div class="quick-actions">
+    <button class="primary" onclick="newRecipe();showPage('calc')">＋ Hitung HPP baru</button>
+    <button class="secondary" onclick="showPage('list')">Lihat produk & resep</button>
+   </div>
+  </section>
+  <section class="card">
+   <h2>Rencana fitur Usahaku Pro</h2><div class="sub">Fitur dikembangkan bertahap tanpa mengganggu kalkulator dan data resep yang sudah ada.</div>
+   <div class="feature-list">
+    <div class="feature-item"><span class="feature-number">01</span><div><b>Dashboard usaha</b><small>Ringkasan produk dan aktivitas usaha</small></div><span class="pill">Tahap 1</span></div>
+    <div class="feature-item"><span class="feature-number">02</span><div><b>Produk & HPP</b><small>Database produk, bahan, dan biaya produksi</small></div><span class="pill">Aktif</span></div>
+    <div class="feature-item"><span class="feature-number">03</span><div><b>Kalkulator harga jual</b><small>Harga offline dan marketplace</small></div><span class="pill">Berikutnya</span></div>
+    <div class="feature-item"><span class="feature-number">04</span><div><b>Manajemen stok</b><small>Persediaan dan pengingat stok menipis</small></div><span class="pill">Rencana</span></div>
+    <div class="feature-item"><span class="feature-number">05</span><div><b>Pencatatan penjualan</b><small>Omzet dan transaksi produk</small></div><span class="pill">Rencana</span></div>
+    <div class="feature-item"><span class="feature-number">06</span><div><b>Laporan keuangan</b><small>Pengeluaran, laba, dan ringkasan bulanan</small></div><span class="pill">Rencana</span></div>
+    <div class="feature-item"><span class="feature-number">07</span><div><b>Ekspor & backup</b><small>Unduh dan cadangkan data usaha</small></div><span class="pill">Rencana</span></div>
+   </div>
+  </section>
+ </div>
+
+ <div id="calcPage" class="hidden">
   <section class="card">
    <h2>01. Bahan Dasar</h2><div class="sub">Tambahkan bahan satu per satu. Berat beli dan berat terpakai harus memakai satuan yang sama (gram dengan gram, atau ml dengan ml).</div>
    <div id="ingredients"></div><button class="secondary" style="width:100%" onclick="addIngredient()">＋ Tambah bahan</button>
@@ -107,12 +154,12 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:18px}
   </section>
  </div>
 </div>
-<footer>CO KSU • PERSONAL CLOUD HPP</footer>
+<footer>USAHAKU PRO • BUSINESS MANAGEMENT</footer>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// 1. GANTI DUA NILAI INI DENGAN DATA PROJECT SUPABASE MILIKMU
+// Konfigurasi Supabase aplikasi sebelumnya
 const SUPABASE_URL = "https://duoliiajkmcceashdyby.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_pljGmJdi0OpgF9QPt2S2KA_R0Lya_t5";
 
@@ -130,9 +177,6 @@ const roundPrice = n => Math.ceil(n / 100) * 100;
 
 function initSupabase(){
  if(!window.supabase){showAuthMessage("Library koneksi gagal dimuat. Periksa koneksi internet lalu muat ulang halaman.",true);return;}
- if(SUPABASE_URL.startsWith("MASUKKAN_") || SUPABASE_ANON_KEY.startsWith("MASUKKAN_")){
-  showAuthMessage("Aplikasi belum dihubungkan ke Supabase. Isi SUPABASE_URL dan SUPABASE_ANON_KEY di bagian konfigurasi kode.",true);return;
- }
  db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
  db.auth.getSession().then(({data,error})=>{
   if(error){showAuthMessage(error.message,true);return;}
@@ -157,7 +201,7 @@ function showSaveMessage(message,error=false){
  el.className=message?"notice"+(error?" error":""):"notice hidden";
 }
 async function authenticate(){
- if(!db){showAuthMessage("Hubungkan Supabase terlebih dahulu dengan mengisi URL dan key.",true);return;}
+ if(!db){showAuthMessage("Koneksi Supabase belum tersedia.",true);return;}
  const email=$("authEmail").value.trim();
  const password=$("authPassword").value;
  if(!email||!password){showAuthMessage("Isi email dan password terlebih dahulu.",true);return;}
@@ -181,6 +225,7 @@ function handleSession(session){
  if(currentUser){
   $("userEmail").textContent=currentUser.email||"Akun pribadi";
   if(!ingredients.length)addIngredient();
+  showPage("dashboard");
   loadRecipes();
  }else{
   $("userEmail").textContent="";
@@ -190,8 +235,10 @@ async function logout(){
  if(db)await db.auth.signOut();
 }
 function showPage(page){
+ $("dashboardPage").classList.toggle("hidden",page!=="dashboard");
  $("calcPage").classList.toggle("hidden",page!=="calc");
  $("listPage").classList.toggle("hidden",page!=="list");
+ $("dashboardTab").classList.toggle("active",page==="dashboard");
  $("calcTab").classList.toggle("active",page==="calc");
  $("listTab").classList.toggle("active",page==="list");
  if(page==="list")loadRecipes();
@@ -264,7 +311,8 @@ async function saveRecipe(){
  const name=$("namaResep").value.trim();
  if(!name){showSaveMessage("Isi nama resep terlebih dahulu.",true);return;}
  if(!num("jumlah")){showSaveMessage("Jumlah produk harus lebih dari 0.",true);return;}
- const payload=recipePayload();const summary=calculate();
+ const payload=recipePayload();
+ calculate();
  $("saveButton").disabled=true;
  try{
   let result;
@@ -277,7 +325,7 @@ async function saveRecipe(){
   editingId=result.data.id;
   $("saveButton").textContent="Simpan Perubahan";
   $("cancelEdit").classList.remove("hidden");
-  showSaveMessage("Resep berhasil disimpan ke cloud. Kamu bisa membukanya kembali dari menu Buka Resep.");
+  showSaveMessage("Resep berhasil disimpan ke cloud. Kamu bisa membukanya kembali dari menu Produk & Resep.");
   await loadRecipes();
  }catch(e){showSaveMessage("Gagal menyimpan: "+(e.message||"Periksa koneksi dan konfigurasi database."),true);}
  finally{$("saveButton").disabled=false;}
@@ -287,6 +335,7 @@ async function loadRecipes(){
  const root=$("recipeList");root.textContent="Memuat resep...";
  const {data,error}=await db.from("recipes").select("id,name,data,created_at,updated_at").order("updated_at",{ascending:false});
  if(error){root.textContent="Gagal memuat resep: "+error.message;return;}
+ $("dashRecipeCount").textContent=data.length.toLocaleString("id-ID");
  root.innerHTML="";
  if(!data.length){const p=document.createElement("p");p.className="small";p.textContent="Belum ada resep tersimpan. Buat resep di menu Kalkulator HPP, lalu tekan Simpan Resep.";root.append(p);return;}
  data.forEach(r=>{

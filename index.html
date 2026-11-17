@@ -73,8 +73,9 @@ select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;b
   <button id="dashboardTab" class="tab active" onclick="showPage('dashboard')">Dashboard</button>
   <button id="calcTab" class="tab" onclick="showPage('calc')">Kalkulator HPP</button>
   <button id="listTab" class="tab" onclick="showPage('list')">Produk & Resep</button>
-  <button id="stockTab" class="tab" onclick="showPage('stock')">Manajemen Stok</button>
+  <button id="stockTab" class="tab" onclick="showPage('stock')">Manajemen Stok</button><button id="salesTab" class="tab" onclick="showPage('sales')">Penjualan</button>
  </nav>
+ 
 
  <div id="dashboardPage">
   <section class="card">
@@ -194,24 +195,64 @@ select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;b
    <h2>Daftar Persediaan</h2>
    <div id="stockList" class="sub">Memuat stok...</div>
   </section>
-  <section class="card">
-   <h2>Catat Penjualan</h2>
-   <div class="sub">Penjualan yang dicatat di sini akan otomatis mengurangi stok barang yang dipilih.</div>
-   <div class="field"><label>Barang</label><select id="saleItem"><option value="">Pilih barang</option></select></div>
-   <div class="grid">
-    <div class="field"><label>Jumlah terjual</label><input id="saleQty" type="number" min="0.01" step="0.01" placeholder="Contoh: 2"></div>
-    <div class="field"><label>Harga jual per satuan (Rp)</label><input id="salePrice" type="number" min="0" step="1" placeholder="Contoh: 15000"></div>
-   </div>
-   <div class="field"><label>Catatan</label><input id="saleNote" placeholder="Opsional"></div>
-   <button id="saleButton" class="primary" onclick="recordSale()">Simpan penjualan & kurangi stok</button>
-  </section>
+  
   <section class="card">
    <h2>Riwayat Pergerakan Stok</h2>
    <div class="sub">Menampilkan hingga 30 aktivitas stok terbaru.</div>
    <div id="stockHistory" class="sub">Memuat riwayat...</div>
   </section>
  </div>
-</div>
+<div id="salesPage" class="hidden">
+  <section class="card">
+    <h2>Ringkasan Penjualan</h2>
+    <div class="sub">Pantau omzet usaha kamu.</div>
+    <div class="dashboard-grid">
+      <div class="metric">
+        <span>Omzet hari ini</span>
+        <strong id="salesToday">Rp0</strong>
+        <small>Total penjualan hari ini</small>
+      </div>
+      <div class="metric">
+        <span>Omzet bulan ini</span>
+        <strong id="salesMonth">Rp0</strong>
+        <small>Total penjualan bulan ini</small>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Catat Penjualan</h2>
+    <div class="sub">Penjualan otomatis mengurangi stok barang.</div>
+    <div class="field">
+      <label>Barang</label>
+      <select id="saleItem">
+        <option value="">Pilih barang</option>
+      </select>
+    </div>
+    <div class="grid">
+      <div class="field">
+        <label>Jumlah terjual</label>
+        <input id="saleQty" type="number" min="0.01" step="0.01" placeholder="Contoh: 2">
+      </div>
+      <div class="field">
+        <label>Harga jual per satuan (Rp)</label>
+        <input id="salePrice" type="number" min="0" step="1" placeholder="15000">
+      </div>
+    </div>
+    <div class="field">
+      <label>Catatan</label>
+      <input id="saleNote" placeholder="Opsional">
+    </div>
+    <button id="saleButton" class="primary" onclick="recordSale()">Simpan Penjualan</button>
+    <div id="salesMessage" class="notice hidden"></div>
+  </section>
+
+  <section class="card">
+    <h2>Riwayat Transaksi</h2>
+    <div class="sub">Hingga 50 transaksi terbaru.</div>
+    <div id="salesHistory">Memuat transaksi...</div>
+  </section>
+</div></div>
 <footer>USAHAKU PRO • MANAJEMEN USAHA</footer>
 </main>
 
@@ -300,12 +341,21 @@ function showPage(page){
  $("calcPage").classList.toggle("hidden",page!=="calc");
  $("listPage").classList.toggle("hidden",page!=="list");
  $("stockPage").classList.toggle("hidden",page!=="stock");
+ $("salesPage").classList.toggle("hidden",page!=="sales");
+
  $("dashboardTab").classList.toggle("active",page==="dashboard");
  $("calcTab").classList.toggle("active",page==="calc");
  $("listTab").classList.toggle("active",page==="list");
  $("stockTab").classList.toggle("active",page==="stock");
+ $("salesTab").classList.toggle("active",page==="sales");
+
  if(page==="list")loadRecipes();
  if(page==="stock")loadStock();
+
+ if(page==="sales"){
+  loadStock();
+  loadSales();
+ }
 }
 function addIngredient(data={}){
  ingredients.push({id:nextId++,nama:data.nama||"",beli:data.beli??"",harga:data.harga??"",pakai:data.pakai??""});
@@ -520,13 +570,124 @@ async function deleteStockItem(item){
  const {error}=await db.from("inventory_items").delete().eq("id",item.id);
  if(error){alert("Barang tidak dapat dihapus: "+error.message);return;}loadStock();
 }
+function salesMsg(message,error=false){
+ const el=$("salesMessage");
+ el.textContent=message;
+ el.className=message?"notice"+(error?" error":""):"notice hidden";
+}
+
+async function loadSales(){
+ if(!db||!currentUser)return;
+
+ $("salesHistory").textContent="Memuat transaksi...";
+
+ try{
+  const now=new Date();
+  const dayStart=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const monthStart=new Date(now.getFullYear(),now.getMonth(),1);
+
+  const {data:summary,error:summaryError}=await db
+   .from("inventory_sales")
+   .select("total,created_at")
+   .gte("created_at",monthStart.toISOString());
+
+  if(summaryError)throw summaryError;
+
+  let today=0;
+  let month=0;
+
+  (summary||[]).forEach(s=>{
+   const total=Number(s.total)||0;
+   month+=total;
+   if(new Date(s.created_at)>=dayStart)today+=total;
+  });
+
+  $("salesToday").textContent=rupiah(today);
+  $("salesMonth").textContent=rupiah(month);
+
+  const {data,error}=await db
+   .from("inventory_sales")
+   .select("id,quantity,unit_price,total,note,created_at,inventory_items(name,unit)")
+   .order("created_at",{ascending:false})
+   .limit(50);
+
+  if(error)throw error;
+
+  const root=$("salesHistory");
+  root.innerHTML="";
+
+  if(!data.length){
+   root.textContent="Belum ada transaksi penjualan.";
+   return;
+  }
+
+  data.forEach(s=>{
+   const box=document.createElement("div");
+   box.className="recipe";
+
+   const name=document.createElement("strong");
+   name.textContent=s.inventory_items?.name||"Barang";
+
+   const meta=document.createElement("div");
+   meta.className="recipe-meta";
+   meta.textContent=
+    Number(s.quantity).toLocaleString("id-ID")+" "+
+    (s.inventory_items?.unit||"")+" × "+
+    rupiah(s.unit_price)+" = "+rupiah(s.total);
+
+   const date=document.createElement("div");
+   date.className="recipe-meta";
+   date.textContent=
+    new Date(s.created_at).toLocaleString("id-ID")+
+    (s.note?" • "+s.note:"");
+
+   box.append(name,meta,date);
+   root.append(box);
+  });
+
+ }catch(e){
+  $("salesHistory").textContent="Gagal memuat transaksi: "+e.message;
+ }
+}
+
 async function recordSale(){
- const id=$("saleItem").value,qty=Number($("saleQty").value),price=Number($("salePrice").value);
- if(!id||!Number.isFinite(qty)||qty<=0||!Number.isFinite(price)||price<0){stockMsg("Pilih barang dan isi jumlah serta harga dengan benar.",true);return;}
- const b=$("saleButton");b.disabled=true;
- try{const {error}=await db.rpc("record_inventory_sale",{p_item_id:id,p_quantity:qty,p_unit_price:price,p_note:$("saleNote").value.trim()||"Penjualan"});if(error)throw error;
- $("saleQty").value="";$("salePrice").value="";$("saleNote").value="";stockMsg("Penjualan dicatat. Stok otomatis berkurang.");await loadStock();
- }catch(e){stockMsg("Penjualan gagal: "+e.message,true);}finally{b.disabled=false;}
+ const id=$("saleItem").value;
+ const qty=Number($("saleQty").value);
+ const price=Number($("salePrice").value);
+
+ if(!id||!Number.isFinite(qty)||qty<=0||
+    !Number.isFinite(price)||price<0){
+  salesMsg("Pilih barang dan isi jumlah serta harga dengan benar.",true);
+  return;
+ }
+
+ const b=$("saleButton");
+ b.disabled=true;
+
+ try{
+  const {error}=await db.rpc("record_inventory_sale",{
+   p_item_id:id,
+   p_quantity:qty,
+   p_unit_price:price,
+   p_note:$("saleNote").value.trim()||"Penjualan"
+  });
+
+  if(error)throw error;
+
+  $("saleQty").value="";
+  $("salePrice").value="";
+  $("saleNote").value="";
+
+  salesMsg("Penjualan berhasil dicatat. Stok otomatis berkurang.");
+
+  await loadStock();
+  await loadSales();
+
+ }catch(e){
+  salesMsg("Penjualan gagal: "+e.message,true);
+ }finally{
+  b.disabled=false;
+ }
 }
 
 initSupabase();

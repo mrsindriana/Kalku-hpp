@@ -1,730 +1,336 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Coksu HPP - Kalkulator Usaha</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#76563f">
+<title>Coksu HPP — Personal Cloud</title>
 <style>
-:root {
-  --cream:#F8F3EB;
-  --beige:#E9D9C5;
-  --coksu:#A98263;
-  --brown:#654936;
-  --dark:#463327;
-  --white:#FFFDF9;
-  --muted:#958477;
-  --line:#E9DED2;
-  --green:#657B61;
-}
-* {box-sizing:border-box}
-body {
-  margin:0;
-  background:var(--cream);
-  color:var(--dark);
-  font-family:Arial, sans-serif;
-  padding-bottom:35px;
-}
-header {
-  background:linear-gradient(135deg,#6C4B36,#A98263);
-  color:white;
-  padding:30px 20px 38px;
-  border-radius:0 0 28px 28px;
-}
-.header-inner,.container {
-  max-width:760px;
-  margin:auto;
-}
-.logo {
-  font-size:12px;
-  letter-spacing:3px;
-  opacity:.85;
-}
-header h1 {
-  font-family:Georgia,serif;
-  font-size:29px;
-  margin:12px 0 6px;
-}
-header p {
-  font-size:13px;
-  opacity:.85;
-  margin:0;
-}
-.container {
-  padding:0 15px;
-  margin-top:20px;
-}
-.card {
-  background:var(--white);
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:18px;
-  margin-bottom:15px;
-  box-shadow:0 3px 12px #60452A0A;
-}
-.section-title {
-  font-family:Georgia,serif;
-  font-size:19px;
-  margin:0 0 5px;
-}
-.subtitle {
-  color:var(--muted);
-  font-size:12px;
-  line-height:1.6;
-  margin-bottom:16px;
-}
-label {
-  display:block;
-  font-size:12px;
-  font-weight:bold;
-  margin-bottom:7px;
-  color:var(--brown);
-}
-input {
-  width:100%;
-  min-width:0;
-  padding:12px;
-  border:1px solid var(--line);
-  background:#FFFCF8;
-  border-radius:10px;
-  color:var(--dark);
-  font-size:14px;
-  outline:none;
-}
-input:focus {border-color:var(--coksu)}
-.field {margin-bottom:13px}
-.grid {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-.ingredient {
-  border:1px solid var(--line);
-  border-radius:14px;
-  padding:14px;
-  margin-bottom:12px;
-  background:#FFFEFC;
-}
-.ingredient-head {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:12px;
-}
-.ingredient-head strong {font-size:13px}
-button {
-  border:0;
-  cursor:pointer;
-  border-radius:10px;
-  padding:12px 15px;
-  font-weight:bold;
-  font-size:13px;
-}
-.add-btn {
-  background:var(--beige);
-  color:var(--brown);
-  width:100%;
-}
-.delete-btn {
-  background:#F6E9E5;
-  color:#A15D50;
-  padding:7px 10px;
-}
-.result {
-  background:#F3EBE1;
-  padding:14px;
-  border-radius:12px;
-  margin-top:12px;
-}
-.result-row {
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  font-size:13px;
-  margin:10px 0;
-}
-.result-row strong {text-align:right}
-.total {
-  border-top:1px solid #DCCBBB;
-  padding-top:13px;
-  font-weight:bold;
-}
-.hpp-box {
-  background:linear-gradient(135deg,#6B4B37,#A98263);
-  color:white;
-  padding:20px;
-  border-radius:15px;
-  margin-top:14px;
-}
-.hpp-box small {opacity:.8}
-.hpp-box h2 {
-  font-family:Georgia,serif;
-  font-size:30px;
-  margin:8px 0;
-}
-.hpp-box p {font-size:11px;opacity:.85}
-table {
-  width:100%;
-  border-collapse:collapse;
-  font-size:12px;
-}
-th,td {
-  padding:12px 7px;
-  border-bottom:1px solid var(--line);
-  text-align:right;
-  white-space:nowrap;
-}
-th:first-child,td:first-child {text-align:left}
-th {color:var(--muted);font-size:11px}
-td {font-weight:bold}
-.table-wrap {overflow-x:auto}
-.price-card {
-  background:#F8F2EA;
-  border-radius:12px;
-  padding:12px;
-  margin-bottom:10px;
-}
-.price-card h4 {margin:0 0 10px;font-size:13px}
-.price-values {
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:5px;
-}
-.price-values div {
-  font-size:10px;
-  color:var(--muted);
-}
-.price-values strong {
-  display:block;
-  color:var(--brown);
-  font-size:13px;
-  margin-top:5px;
-}
-.primary {
-  background:var(--brown);
-  color:white;
-  width:100%;
-  margin-top:10px;
-}
-.secondary {
-  background:var(--beige);
-  color:var(--brown);
-  width:100%;
-  margin-top:8px;
-}
-.small-note {
-  font-size:11px;
-  line-height:1.6;
-  color:var(--muted);
-}
-.saved-item {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:12px 0;
-  border-bottom:1px solid var(--line);
-  gap:10px;
-}
-footer {
-  text-align:center;
-  color:var(--muted);
-  font-size:11px;
-  padding:20px;
-}
-@media(max-width:380px) {
-  .grid {gap:7px}
-  .card {padding:14px}
-  .price-values strong {font-size:11px}
-}
+:root{--cream:#f8f3eb;--paper:#fffdf9;--beige:#eadbc9;--tan:#c6a88d;--coksu:#a98263;--brown:#76563f;--dark:#49372b;--muted:#938477;--line:#eadfd3;--green:#60785d;--red:#a65c50}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--dark);font-family:Arial,sans-serif;padding-bottom:40px}
+header{background:linear-gradient(135deg,#5f4331,#a98263);color:white;padding:27px 18px 30px;border-radius:0 0 26px 26px}
+.wrap{max-width:760px;margin:auto}.brand{font-size:11px;letter-spacing:3px;opacity:.85}h1{font:30px Georgia,serif;margin:10px 0 5px}header p{font-size:13px;margin:0;opacity:.9}
+main{max-width:760px;margin:18px auto;padding:0 13px}.card{background:var(--paper);border:1px solid var(--line);border-radius:17px;padding:17px;margin-bottom:14px;box-shadow:0 4px 16px #60452a0a}
+h2{font:20px Georgia,serif;margin:0 0 6px}.sub{font-size:12px;line-height:1.55;color:var(--muted);margin-bottom:14px}
+label{display:block;font-size:12px;font-weight:bold;color:var(--brown);margin:0 0 6px}input{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fffdfa;color:var(--dark);font-size:14px;outline:none}input:focus{border-color:var(--coksu)}
+.field{margin-bottom:12px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+button{border:0;border-radius:10px;padding:12px 14px;font-weight:bold;font-size:13px;cursor:pointer}
+.primary{background:var(--brown);color:white;width:100%}.secondary{background:var(--beige);color:var(--brown)}.outline{background:transparent;border:1px solid var(--line);color:var(--brown)}.danger{background:#f6e9e5;color:var(--red)}button:disabled{opacity:.5;cursor:not-allowed}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}.tab{background:#eee3d7;color:var(--brown)}.tab.active{background:var(--brown);color:white}
+.hidden{display:none!important}.notice{font-size:12px;line-height:1.5;padding:11px;border-radius:10px;background:#f3ebdf;color:var(--brown);margin:10px 0}.notice.error{background:#f8e9e5;color:#934c42}.notice.ok{background:#eaf0e7;color:#526b4d}
+.ingredient{border:1px solid var(--line);border-radius:13px;padding:12px;margin:10px 0;background:#fffefa}.ingredient-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:13px}
+.result{background:#f3ebdf;border-radius:12px;padding:13px;margin-top:12px}.result-row{display:flex;justify-content:space-between;gap:12px;font-size:13px;margin:9px 0}.result-row strong{text-align:right}.total{border-top:1px solid #ddcbbb;padding-top:12px;font-weight:bold}
+.hpp{background:linear-gradient(135deg,#674a36,#a98263);color:white;border-radius:14px;padding:18px;margin-top:13px}.hpp small{opacity:.8}.hpp strong{display:block;font:30px Georgia,serif;margin:8px 0}
+.tablewrap{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:12px}th,td{padding:11px 7px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}th:first-child,td:first-child{text-align:left}th{color:var(--muted)}
+.recipe{padding:12px 0;border-bottom:1px solid var(--line)}.recipe:last-child{border:0}.recipe-name{font-weight:bold;font-size:14px}.recipe-meta{font-size:11px;color:var(--muted);margin-top:4px}
+.small{font-size:11px;line-height:1.5;color:var(--muted)}.pill{font-size:10px;background:#e9f0e6;color:#526b4d;padding:5px 8px;border-radius:20px}
+footer{text-align:center;color:var(--muted);font-size:11px;padding:18px}
+@media(max-width:390px){.card{padding:14px}.grid{gap:7px}h1{font-size:27px}}
 </style>
 </head>
-
 <body>
-
-<header>
- <div class="header-inner">
-  <div class="logo">CO KSU • BUSINESS TOOLS</div>
-  <h1>Kalkulator HPP</h1>
-  <p>Hitung modal, biaya produksi & harga jual usahamu.</p>
- </div>
-</header>
-
-<main class="container">
-
-<section class="card">
- <h3 class="section-title">01. Bahan Dasar</h3>
- <div class="subtitle">
-  Masukkan semua bahan yang digunakan dalam satu resep.
-  Berat beli dan berat terpakai harus menggunakan satuan yang sama.
- </div>
-
- <div id="ingredients"></div>
-
- <button class="add-btn" onclick="addIngredient()">
-  + Tambah Bahan
- </button>
-
- <div class="result">
-  <div class="result-row">
-   Total Bahan Dasar
-   <strong id="totalBahan">Rp0</strong>
-  </div>
- </div>
+<header><div class="wrap"><div class="brand">CO KSU • BUSINESS TOOLS</div><h1>Kalkulator HPP</h1><p>Hitung modal, simpan resep, buka kembali kapan saja.</p></div></header>
+<main>
+<section id="authCard" class="card">
+ <h2>Akun Coksu HPP</h2><div class="sub">Masuk atau buat akun pribadi agar resep tersimpan online dan bisa dipulihkan saat ganti HP.</div>
+ <div class="tabs"><button id="loginTab" class="tab active" type="button" onclick="setAuthMode('login')">Masuk</button><button id="signupTab" class="tab" type="button" onclick="setAuthMode('signup')">Daftar akun</button></div>
+ <div class="field"><label>Email</label><input id="authEmail" type="email" autocomplete="email" placeholder="nama@email.com"></div>
+ <div class="field"><label>Password</label><input id="authPassword" type="password" autocomplete="current-password" placeholder="Minimal 6 karakter"></div>
+ <button id="authButton" class="primary" type="button" onclick="authenticate()">Masuk</button>
+ <div id="authMessage" class="notice hidden"></div>
+ <p class="small">Gunakan email dan password yang sama saat login di HP baru. Jangan bagikan password kepada orang lain.</p>
 </section>
 
-<section class="card">
- <h3 class="section-title">02. Biaya Operasional</h3>
- <div class="subtitle">
-  Biaya otomatis sebesar 10% dari total bahan dasar untuk setiap komponen.
+<div id="appArea" class="hidden">
+ <section class="card">
+  <div class="row"><div><h2>Halo, pemilik usaha!</h2><div id="userEmail" class="small"></div></div><button class="outline" onclick="logout()">Keluar</button></div>
+  <div class="notice ok">Cloud aktif. Resep yang disimpan akan terhubung ke akun ini.</div>
+ </section>
+ <div class="tabs"><button id="calcTab" class="tab active" onclick="showPage('calc')">Kalkulator HPP</button><button id="listTab" class="tab" onclick="showPage('list')">Buka Resep</button></div>
+
+ <div id="calcPage">
+  <section class="card">
+   <h2>01. Bahan Dasar</h2><div class="sub">Tambahkan bahan satu per satu. Berat beli dan berat terpakai harus memakai satuan yang sama (gram dengan gram, atau ml dengan ml).</div>
+   <div id="ingredients"></div><button class="secondary" style="width:100%" onclick="addIngredient()">＋ Tambah bahan</button>
+   <div class="result"><div class="result-row"><span>Total bahan dasar</span><strong id="totalBahan">Rp0</strong></div></div>
+  </section>
+  <section class="card">
+   <h2>02. Biaya Operasional</h2><div class="sub">Masing-masing otomatis dihitung 10% dari total bahan dasar.</div>
+   <div class="result">
+    <div class="result-row"><span>Tenaga kerja (10%)</span><strong id="tenaga">Rp0</strong></div>
+    <div class="result-row"><span>Listrik, gas, air (10%)</span><strong id="utilitas">Rp0</strong></div>
+    <div class="result-row"><span>Penyusutan (10%)</span><strong id="penyusutan">Rp0</strong></div>
+    <div class="result-row total"><span>Total operasional (30%)</span><strong id="totalOper">Rp0</strong></div>
+   </div>
+  </section>
+  <section class="card">
+   <h2>03. Biaya Packing</h2><div class="sub">Masukkan total biaya packing untuk satu resep produksi.</div>
+   <div class="field"><label>Total biaya packing (Rp)</label><input id="packing" type="number" min="0" value="0" oninput="calculate()"></div>
+  </section>
+  <section class="card">
+   <h2>04. Hasil Produksi</h2>
+   <div class="field"><label>Jumlah produk yang dihasilkan (pcs/porsi)</label><input id="jumlah" type="number" min="0" value="20" oninput="calculate()"></div>
+   <div class="result">
+    <div class="result-row"><span>Total bahan dasar</span><strong id="rekapBahan">Rp0</strong></div>
+    <div class="result-row"><span>Total operasional</span><strong id="rekapOper">Rp0</strong></div>
+    <div class="result-row"><span>Biaya packing</span><strong id="rekapPacking">Rp0</strong></div>
+    <div class="result-row total"><span>JUMLAH BIAYA PRODUKSI</span><strong id="jumlahBiaya">Rp0</strong></div>
+   </div>
+   <div class="hpp"><small>HPP AKHIR PER PRODUK</small><strong id="hpp">Rp0</strong><small>Total biaya produksi ÷ jumlah produk</small></div>
+  </section>
+  <section class="card">
+   <h2>05. Potongan Marketplace</h2><div class="sub">Persentase dapat diubah sesuai potongan aktual akun toko.</div>
+   <div class="grid">
+    <div class="field"><label>Shopee (%)</label><input id="feeShopee" type="number" min="0" max="99" step=".01" value="24.67" oninput="calculate()"></div>
+    <div class="field"><label>ShopeeFood (%)</label><input id="feeFood" type="number" min="0" max="99" step=".01" value="25" oninput="calculate()"></div>
+   </div>
+   <p class="small">Harga marketplace dihitung agar penerimaan setelah potongan setara dengan harga offline. Belum termasuk diskon tambahan yang ditanggung penjual.</p>
+  </section>
+  <section class="card">
+   <h2>06. Rekomendasi Harga Jual</h2><div class="sub">Markup 30%, 50%, dan 70% dihitung dari HPP. Harga dibulatkan ke atas dalam kelipatan Rp100.</div>
+   <div class="tablewrap"><table><thead><tr><th>Markup</th><th>Offline</th><th>Shopee</th><th>ShopeeFood</th></tr></thead><tbody id="hargaTable"></tbody></table></div>
+  </section>
+  <section class="card">
+   <h2>07. Simpan Resep</h2><div class="sub">Simpan resep ke akun cloud. Resep dapat dibuka dan diedit kembali melalui menu Buka Resep.</div>
+   <div class="field"><label>Nama resep / produk</label><input id="namaResep" placeholder="Contoh: Dimsum Ayam 16 pcs"></div>
+   <div id="saveMessage" class="notice hidden"></div>
+   <button class="primary" id="saveButton" onclick="saveRecipe()">Simpan Resep ke Cloud</button>
+   <button class="outline hidden" id="cancelEdit" style="width:100%;margin-top:8px" onclick="newRecipe()">Batalkan edit / resep baru</button>
+  </section>
+  <section class="card"><button class="secondary" style="width:100%" onclick="copyResult()">Salin Rekap HPP</button><button class="outline" style="width:100%;margin-top:8px" onclick="resetForm()">Kosongkan kalkulator</button></section>
  </div>
 
- <div id="operasional"></div>
-
- <div class="result">
-  <div class="result-row">
-   Tenaga Kerja (10%)
-   <strong id="tenaga">Rp0</strong>
-  </div>
-  <div class="result-row">
-   Listrik, Gas & Air (10%)
-   <strong id="utilitas">Rp0</strong>
-  </div>
-  <div class="result-row">
-   Penyusutan (10%)
-   <strong id="penyusutan">Rp0</strong>
-  </div>
-  <div class="result-row total">
-   Total Biaya Operasional (30%)
-   <strong id="totalOper">Rp0</strong>
-  </div>
+ <div id="listPage" class="hidden">
+  <section class="card">
+   <div class="row"><div><h2>Resep Tersimpan</h2><div class="sub" style="margin:5px 0 0">Daftar resep yang tersimpan di akun cloud kamu.</div></div><button class="secondary" onclick="loadRecipes()">Muat ulang</button></div>
+   <div id="listMessage" class="notice hidden"></div><div id="recipeList"><p class="small">Memuat resep...</p></div>
+  </section>
  </div>
-</section>
-
-<section class="card">
- <h3 class="section-title">03. Biaya Packing</h3>
- <div class="subtitle">
-  Biaya kemasan untuk satu kali produksi resep.
- </div>
- <div class="field">
-  <label>Total biaya packing (Rp)</label>
-  <input id="packing" type="number" min="0" value="0" oninput="calculate()">
- </div>
-</section>
-
-<section class="card">
- <h3 class="section-title">04. Hasil Produksi</h3>
- <div class="field">
-  <label>Jumlah produk yang dihasilkan (pcs/porsi)</label>
-  <input id="jumlah" type="number" min="0" value="20" oninput="calculate()">
- </div>
-
- <div class="result">
-  <div class="result-row">
-   Total Bahan Dasar
-   <strong id="rekapBahan">Rp0</strong>
-  </div>
-  <div class="result-row">
-   Total Operasional
-   <strong id="rekapOper">Rp0</strong>
-  </div>
-  <div class="result-row">
-   Total Packing
-   <strong id="rekapPacking">Rp0</strong>
-  </div>
-  <div class="result-row total">
-   JUMLAH BIAYA PRODUKSI
-   <strong id="jumlahBiaya">Rp0</strong>
-  </div>
- </div>
-
- <div class="hpp-box">
-  <small>HPP AKHIR PER PRODUK</small>
-  <h2 id="hpp">Rp0</h2>
-  <p>Total biaya produksi ÷ jumlah produk yang dihasilkan</p>
- </div>
-</section>
-
-<section class="card">
- <h3 class="section-title">05. Pengaturan Marketplace</h3>
- <div class="subtitle">
-  Atur persentase potongan sesuai biaya aktual yang dibebankan kepada toko.
- </div>
- <div class="grid">
-  <div class="field">
-   <label>Potongan Shopee (%)</label>
-   <input id="feeShopee" type="number" min="0" max="99" step="0.01" value="24.67" oninput="calculate()">
-  </div>
-  <div class="field">
-   <label>Potongan ShopeeFood (%)</label>
-   <input id="feeFood" type="number" min="0" max="99" step="0.01" value="25" oninput="calculate()">
-  </div>
- </div>
- <p class="small-note">
-  Nilai awal merupakan asumsi simulasi. Silakan sesuaikan dengan tarif,
-  program promo, dan potongan aktual akun tokomu.
- </p>
-</section>
-
-<section class="card">
- <h3 class="section-title">06. Rekomendasi Harga Jual</h3>
- <div class="subtitle">
-  Harga offline menggunakan markup dari HPP. Harga marketplace
-  disesuaikan agar hasil penerimaan setelah potongan setara dengan
-  harga offline.
- </div>
-
- <div class="table-wrap">
-  <table>
-   <thead>
-    <tr>
-     <th>Markup</th>
-     <th>Offline</th>
-     <th>Shopee</th>
-     <th>ShopeeFood</th>
-    </tr>
-   </thead>
-   <tbody id="hargaTable"></tbody>
-  </table>
- </div>
-
- <p class="small-note">
-  Semua harga dibulatkan ke atas ke kelipatan Rp100.
-  Belum termasuk diskon atau voucher tambahan.
- </p>
-</section>
-
-<section class="card">
- <h3 class="section-title">07. Simpan Resep</h3>
- <div class="subtitle">
-  Simpan hasil perhitungan agar bisa dibuka kembali di perangkat ini.
- </div>
- <div class="field">
-  <label>Nama resep / produk</label>
-  <input id="namaResep" placeholder="Contoh: Dimsum Ayam 16 pcs">
- </div>
- <button class="primary" onclick="saveRecipe()">Simpan Resep</button>
- <div id="savedRecipes" style="margin-top:15px"></div>
-</section>
-
-<section class="card">
- <h3 class="section-title">08. Rekap HPP</h3>
- <p class="small-note">Salin hasil perhitungan untuk catatan usaha.</p>
- <button class="primary" onclick="copyResult()">Salin Rekap HPP</button>
- <button class="secondary" onclick="resetApp()">Reset Perhitungan</button>
-</section>
-
-<footer>
- CO KSU BUSINESS TOOLS<br>
- Simple calculation, better business.
-</footer>
-
+</div>
+<footer>CO KSU • PERSONAL CLOUD HPP</footer>
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+// 1. GANTI DUA NILAI INI DENGAN DATA PROJECT SUPABASE MILIKMU
+const SUPABASE_URL = "https://duoliiajkmcceashdyby.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_pljGmJdi0OpgF9QPt2S2KA_R0Lya_t5";
+
+let db = null;
+let currentUser = null;
+let authMode = "login";
 let ingredients = [];
 let nextId = 1;
+let editingId = null;
 
-const rupiah = n => "Rp" + Math.round(n || 0)
- .toLocaleString("id-ID");
-
-const number = id =>
- Math.max(0, Number(document.getElementById(id).value) || 0);
-
+const $ = id => document.getElementById(id);
+const num = id => Math.max(0, Number($(id).value) || 0);
+const rupiah = n => "Rp" + Math.round(n || 0).toLocaleString("id-ID");
 const roundPrice = n => Math.ceil(n / 100) * 100;
 
-function addIngredient(data = {}) {
- const id = nextId++;
- ingredients.push({
-  id,
-  nama: data.nama || "",
-  beli: data.beli || "",
-  harga: data.harga || "",
-  pakai: data.pakai || ""
- });
- renderIngredients();
-}
-
-function renderIngredients() {
- const container = document.getElementById("ingredients");
- container.innerHTML = "";
-
- ingredients.forEach((item,index) => {
-  const el = document.createElement("div");
-  el.className = "ingredient";
-  el.innerHTML = `
-   <div class="ingredient-head">
-    <strong>Bahan ${index+1}</strong>
-    <button class="delete-btn" onclick="removeIngredient(${item.id})">Hapus</button>
-   </div>
-   <div class="field">
-    <label>Nama bahan</label>
-    <input placeholder="Contoh: Tepung terigu"
-     value="${escapeHTML(item.nama)}"
-     oninput="updateItem(${item.id},'nama',this.value)">
-   </div>
-   <div class="grid">
-    <div class="field">
-     <label>Berat beli (gram/ml)</label>
-     <input type="number" min="0" placeholder="1000"
-      value="${item.beli}"
-      oninput="updateItem(${item.id},'beli',this.value)">
-    </div>
-    <div class="field">
-     <label>Harga beli (Rp)</label>
-     <input type="number" min="0" placeholder="15000"
-      value="${item.harga}"
-      oninput="updateItem(${item.id},'harga',this.value)">
-    </div>
-    <div class="field">
-     <label>Berat terpakai</label>
-     <input type="number" min="0" placeholder="250"
-      value="${item.pakai}"
-      oninput="updateItem(${item.id},'pakai',this.value)">
-    </div>
-    <div class="field">
-     <label>Biaya terpakai</label>
-     <div class="result" style="margin:0;padding:12px">
-      <strong id="cost-${item.id}">Rp0</strong>
-     </div>
-    </div>
-   </div>
-  `;
-  container.appendChild(el);
- });
- calculate();
-}
-
-function escapeHTML(str) {
- return String(str).replace(/[&<>"']/g, c => ({
-  "&":"&amp;","<":"&lt;",">":"&gt;",
-  '"':"&quot;","'":"&#39;"
- }[c]));
-}
-
-function updateItem(id,key,value) {
- const item = ingredients.find(x=>x.id===id);
- if(item) item[key] = value;
- calculate();
-}
-
-function removeIngredient(id) {
- ingredients = ingredients.filter(x=>x.id!==id);
- renderIngredients();
-}
-
-function calculate() {
- let totalBahan = 0;
-
- ingredients.forEach(item=>{
-  const beli = Math.max(0,Number(item.beli)||0);
-  const harga = Math.max(0,Number(item.harga)||0);
-  const pakai = Math.max(0,Number(item.pakai)||0);
-
-  const cost = beli>0 ? (harga/beli)*pakai : 0;
-  totalBahan += cost;
-
-  const output = document.getElementById("cost-"+item.id);
-  if(output) output.textContent = rupiah(cost);
- });
-
- const tenaga = totalBahan*.10;
- const utilitas = totalBahan*.10;
- const penyusutan = totalBahan*.10;
- const totalOper = tenaga+utilitas+penyusutan;
-
- const packing = number("packing");
- const total = totalBahan+totalOper+packing;
- const jumlah = number("jumlah");
- const hpp = jumlah>0 ? total/jumlah : 0;
-
- document.getElementById("totalBahan").textContent=rupiah(totalBahan);
- document.getElementById("tenaga").textContent=rupiah(tenaga);
- document.getElementById("utilitas").textContent=rupiah(utilitas);
- document.getElementById("penyusutan").textContent=rupiah(penyusutan);
- document.getElementById("totalOper").textContent=rupiah(totalOper);
-
- document.getElementById("rekapBahan").textContent=rupiah(totalBahan);
- document.getElementById("rekapOper").textContent=rupiah(totalOper);
- document.getElementById("rekapPacking").textContent=rupiah(packing);
- document.getElementById("jumlahBiaya").textContent=rupiah(total);
- document.getElementById("hpp").textContent=
-  jumlah>0 ? rupiah(hpp) : "Isi jumlah produk";
-
- const feeShopee=number("feeShopee")/100;
- const feeFood=number("feeFood")/100;
-
- const tbody=document.getElementById("hargaTable");
- tbody.innerHTML="";
-
- [30,50,70].forEach(markup=>{
-  const offline=roundPrice(hpp*(1+markup/100));
-  const shopee=feeShopee<1 ? roundPrice(offline/(1-feeShopee)) : 0;
-  const food=feeFood<1 ? roundPrice(offline/(1-feeFood)) : 0;
-
-  const tr=document.createElement("tr");
-  tr.innerHTML=`
-   <td>${markup}%</td>
-   <td>${rupiah(offline)}</td>
-   <td>${rupiah(shopee)}</td>
-   <td>${rupiah(food)}</td>
-  `;
-  tbody.appendChild(tr);
- });
-
- window.hppData={
-  totalBahan,tenaga,utilitas,penyusutan,totalOper,
-  packing,total,jumlah,hpp
- };
-}
-
-function getPrices() {
- const h=window.hppData.hpp;
- const fs=number("feeShopee")/100;
- const ff=number("feeFood")/100;
-
- return [30,50,70].map(m=>{
-  const offline=roundPrice(h*(1+m/100));
-  return {
-   markup:m,
-   offline,
-   shopee:fs<1?roundPrice(offline/(1-fs)):0,
-   food:ff<1?roundPrice(offline/(1-ff)):0
-  };
- });
-}
-
-function copyResult() {
- calculate();
- const d=window.hppData;
- let textResult=`REKAP KALKULATOR HPP\n\n`;
-
- ingredients.forEach((x,i)=>{
-  const cost=x.beli>0 ? (Number(x.harga)/Number(x.beli))*Number(x.pakai) : 0;
-  textResult+=`${i+1}. ${x.nama}: ${rupiah(cost)}\n`;
- });
-
- textResult+=`
-TOTAL BAHAN: ${rupiah(d.totalBahan)}
-TENAGA KERJA: ${rupiah(d.tenaga)}
-LISTRIK GAS AIR: ${rupiah(d.utilitas)}
-PENYUSUTAN: ${rupiah(d.penyusutan)}
-TOTAL OPERASIONAL: ${rupiah(d.totalOper)}
-PACKING: ${rupiah(d.packing)}
-TOTAL BIAYA: ${rupiah(d.total)}
-JUMLAH PRODUK: ${d.jumlah}
-HPP PER PRODUK: ${rupiah(d.hpp)}
-
-REKOMENDASI HARGA
-`;
-
- getPrices().forEach(p=>{
-  textResult+=`${p.markup}% | Offline ${rupiah(p.offline)} | Shopee ${rupiah(p.shopee)} | ShopeeFood ${rupiah(p.food)}\n`;
- });
-
- navigator.clipboard.writeText(textResult)
- .then(()=>alert("Rekap HPP berhasil disalin!"))
- .catch(()=>alert("Tidak dapat menyalin. Periksa izin clipboard browser."));
-}
-
-function saveRecipe() {
- calculate();
- const name=document.getElementById("namaResep").value.trim();
- if(!name) return alert("Isi nama resep terlebih dahulu.");
-
- const saved=JSON.parse(localStorage.getItem("coksuRecipes")||"[]");
- const recipe={
-  id:Date.now(),
-  name,
-  ingredients,
-  packing:document.getElementById("packing").value,
-  jumlah:document.getElementById("jumlah").value,
-  feeShopee:document.getElementById("feeShopee").value,
-  feeFood:document.getElementById("feeFood").value
- };
- saved.push(recipe);
- localStorage.setItem("coksuRecipes",JSON.stringify(saved));
- document.getElementById("namaResep").value="";
- renderSaved();
- alert("Resep berhasil disimpan!");
-}
-
-function renderSaved() {
- const saved=JSON.parse(localStorage.getItem("coksuRecipes")||"[]");
- const el=document.getElementById("savedRecipes");
- el.innerHTML="";
-
- if(!saved.length) {
-  el.innerHTML='<p class="small-note">Belum ada resep tersimpan.</p>';
-  return;
+function initSupabase(){
+ if(!window.supabase){showAuthMessage("Library koneksi gagal dimuat. Periksa koneksi internet lalu muat ulang halaman.",true);return;}
+ if(SUPABASE_URL.startsWith("MASUKKAN_") || SUPABASE_ANON_KEY.startsWith("MASUKKAN_")){
+  showAuthMessage("Aplikasi belum dihubungkan ke Supabase. Isi SUPABASE_URL dan SUPABASE_ANON_KEY di bagian konfigurasi kode.",true);return;
  }
-
- saved.forEach(r=>{
-  const div=document.createElement("div");
-  div.className="saved-item";
-
-  const name=document.createElement("strong");
-  name.style.fontSize="13px";
-  name.textContent=r.name;
-
-  const actions=document.createElement("div");
-  actions.style.display="flex";
-  actions.style.gap="5px";
-
-  const load=document.createElement("button");
-  load.className="secondary";
-  load.style.margin="0";
-  load.textContent="Buka";
-  load.onclick=()=>loadRecipe(r.id);
-
-  const del=document.createElement("button");
-  del.className="delete-btn";
-  del.textContent="Hapus";
-  del.onclick=()=>deleteRecipe(r.id);
-
-  actions.append(load,del);
-  div.append(name,actions);
-  el.appendChild(div);
+ db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+ db.auth.getSession().then(({data,error})=>{
+  if(error){showAuthMessage(error.message,true);return;}
+  handleSession(data.session);
  });
+ db.auth.onAuthStateChange((_event,session)=>handleSession(session));
 }
-
-function loadRecipe(id) {
- const saved=JSON.parse(localStorage.getItem("coksuRecipes")||"[]");
- const r=saved.find(x=>x.id===id);
- if(!r)return;
-
- ingredients=r.ingredients.map(x=>({...x}));
- nextId=Math.max(1,...ingredients.map(x=>x.id+1));
- document.getElementById("packing").value=r.packing;
- document.getElementById("jumlah").value=r.jumlah;
- document.getElementById("feeShopee").value=r.feeShopee;
- document.getElementById("feeFood").value=r.feeFood;
+function setAuthMode(mode){
+ authMode=mode;
+ $("loginTab").classList.toggle("active",mode==="login");
+ $("signupTab").classList.toggle("active",mode==="signup");
+ $("authButton").textContent=mode==="login"?"Masuk":"Buat akun";
+ $("authPassword").autocomplete=mode==="login"?"current-password":"new-password";
+ showAuthMessage("",false);
+}
+function showAuthMessage(message,error=false){
+ const el=$("authMessage");el.textContent=message;
+ el.className=message?"notice"+(error?" error":""):"notice hidden";
+}
+function showSaveMessage(message,error=false){
+ const el=$("saveMessage");el.textContent=message;
+ el.className=message?"notice"+(error?" error":""):"notice hidden";
+}
+async function authenticate(){
+ if(!db){showAuthMessage("Hubungkan Supabase terlebih dahulu dengan mengisi URL dan key.",true);return;}
+ const email=$("authEmail").value.trim();
+ const password=$("authPassword").value;
+ if(!email||!password){showAuthMessage("Isi email dan password terlebih dahulu.",true);return;}
+ if(password.length<6){showAuthMessage("Password minimal 6 karakter.",true);return;}
+ $("authButton").disabled=true;
+ try{
+  let result;
+  if(authMode==="signup") result=await db.auth.signUp({email,password});
+  else result=await db.auth.signInWithPassword({email,password});
+  if(result.error)throw result.error;
+  if(authMode==="signup"&&!result.data.session){
+   showAuthMessage("Pendaftaran berhasil. Periksa email untuk konfirmasi akun, lalu login.",false);
+  }else showAuthMessage("Berhasil. Membuka aplikasi...",false);
+ }catch(e){showAuthMessage(e.message||"Terjadi kesalahan saat autentikasi.",true);}
+ finally{$("authButton").disabled=false;}
+}
+function handleSession(session){
+ currentUser=session?.user||null;
+ $("authCard").classList.toggle("hidden",!!currentUser);
+ $("appArea").classList.toggle("hidden",!currentUser);
+ if(currentUser){
+  $("userEmail").textContent=currentUser.email||"Akun pribadi";
+  if(!ingredients.length)addIngredient();
+  loadRecipes();
+ }else{
+  $("userEmail").textContent="";
+ }
+}
+async function logout(){
+ if(db)await db.auth.signOut();
+}
+function showPage(page){
+ $("calcPage").classList.toggle("hidden",page!=="calc");
+ $("listPage").classList.toggle("hidden",page!=="list");
+ $("calcTab").classList.toggle("active",page==="calc");
+ $("listTab").classList.toggle("active",page==="list");
+ if(page==="list")loadRecipes();
+}
+function addIngredient(data={}){
+ ingredients.push({id:nextId++,nama:data.nama||"",beli:data.beli??"",harga:data.harga??"",pakai:data.pakai??""});
  renderIngredients();
- window.scrollTo({top:0,behavior:"smooth"});
 }
-
-function deleteRecipe(id) {
- if(!confirm("Hapus resep ini?"))return;
- const saved=JSON.parse(localStorage.getItem("coksuRecipes")||"[]");
- localStorage.setItem("coksuRecipes",
-  JSON.stringify(saved.filter(x=>x.id!==id)));
- renderSaved();
-}
-
-function resetApp() {
- if(!confirm("Reset semua input perhitungan? Resep tersimpan tidak akan dihapus."))return;
- ingredients=[];
- nextId=1;
- addIngredient();
- document.getElementById("packing").value=0;
- document.getElementById("jumlah").value=20;
- document.getElementById("feeShopee").value=24.67;
- document.getElementById("feeFood").value=25;
+function renderIngredients(){
+ const root=$("ingredients");root.innerHTML="";
+ ingredients.forEach((x,i)=>{
+  const box=document.createElement("div");box.className="ingredient";
+  const head=document.createElement("div");head.className="ingredient-head";
+  const title=document.createElement("strong");title.textContent="Bahan "+(i+1);
+  const del=document.createElement("button");del.className="danger";del.textContent="Hapus";del.onclick=()=>{ingredients=ingredients.filter(a=>a.id!==x.id);renderIngredients();};
+  head.append(title,del);box.append(head);
+  box.append(makeField("Nama bahan","text",x.nama,v=>updateIngredient(x.id,"nama",v),"Contoh: Tepung terigu"));
+  const grid=document.createElement("div");grid.className="grid";
+  grid.append(makeField("Berat beli (gram/ml)","number",x.beli,v=>updateIngredient(x.id,"beli",v),"1000"));
+  grid.append(makeField("Harga beli (Rp)","number",x.harga,v=>updateIngredient(x.id,"harga",v),"15000"));
+  grid.append(makeField("Berat terpakai","number",x.pakai,v=>updateIngredient(x.id,"pakai",v),"250"));
+  const costWrap=document.createElement("div");costWrap.className="field";
+  const label=document.createElement("label");label.textContent="Biaya terpakai";
+  const value=document.createElement("div");value.className="result";value.style.margin="0";value.id="cost-"+x.id;value.textContent="Rp0";
+  costWrap.append(label,value);grid.append(costWrap);box.append(grid);root.append(box);
+ });
  calculate();
 }
-
-addIngredient();
-renderSaved();
+function makeField(labelText,type,value,onChange,placeholder=""){
+ const wrap=document.createElement("div");wrap.className="field";
+ const label=document.createElement("label");label.textContent=labelText;
+ const input=document.createElement("input");input.type=type;input.value=value;input.placeholder=placeholder;
+ if(type==="number")input.min="0";
+ input.addEventListener("input",e=>onChange(e.target.value));
+ wrap.append(label,input);return wrap;
+}
+function updateIngredient(id,key,value){const x=ingredients.find(a=>a.id===id);if(x)x[key]=value;calculate();}
+function calculate(){
+ let totalBahan=0;
+ ingredients.forEach(x=>{
+  const beli=Number(x.beli)||0,harga=Number(x.harga)||0,pakai=Number(x.pakai)||0;
+  const cost=beli>0?(harga/beli)*pakai:0;totalBahan+=cost;
+  const el=$("cost-"+x.id);if(el)el.textContent=rupiah(cost);
+ });
+ const tenaga=totalBahan*.1,utilitas=totalBahan*.1,penyusutan=totalBahan*.1,totalOper=tenaga+utilitas+penyusutan;
+ const packing=num("packing"),total=totalBahan+totalOper+packing,jumlah=num("jumlah"),hpp=jumlah>0?total/jumlah:0;
+ $("totalBahan").textContent=rupiah(totalBahan);$("tenaga").textContent=rupiah(tenaga);
+ $("utilitas").textContent=rupiah(utilitas);$("penyusutan").textContent=rupiah(penyusutan);$("totalOper").textContent=rupiah(totalOper);
+ $("rekapBahan").textContent=rupiah(totalBahan);$("rekapOper").textContent=rupiah(totalOper);
+ $("rekapPacking").textContent=rupiah(packing);$("jumlahBiaya").textContent=rupiah(total);
+ $("hpp").textContent=jumlah>0?rupiah(hpp):"Isi jumlah produk";
+ const fs=num("feeShopee")/100,ff=num("feeFood")/100,tbody=$("hargaTable");tbody.innerHTML="";
+ [30,50,70].forEach(m=>{
+  const offline=roundPrice(hpp*(1+m/100)),shopee=fs<1?roundPrice(offline/(1-fs)):0,food=ff<1?roundPrice(offline/(1-ff)):0;
+  const tr=document.createElement("tr");
+  [m+"%",rupiah(offline),rupiah(shopee),rupiah(food)].forEach(t=>{const td=document.createElement("td");td.textContent=t;tr.append(td);});
+  tbody.append(tr);
+ });
+ return {totalBahan,tenaga,utilitas,penyusutan,totalOper,packing,total,jumlah,hpp};
+}
+function recipePayload(){
+ return {
+  ingredients:ingredients.map(x=>({nama:x.nama,beli:x.beli,harga:x.harga,pakai:x.pakai})),
+  packing:$("packing").value,jumlah:$("jumlah").value,
+  feeShopee:$("feeShopee").value,feeFood:$("feeFood").value
+ };
+}
+async function saveRecipe(){
+ if(!currentUser||!db){showSaveMessage("Silakan login terlebih dahulu.",true);return;}
+ const name=$("namaResep").value.trim();
+ if(!name){showSaveMessage("Isi nama resep terlebih dahulu.",true);return;}
+ if(!num("jumlah")){showSaveMessage("Jumlah produk harus lebih dari 0.",true);return;}
+ const payload=recipePayload();const summary=calculate();
+ $("saveButton").disabled=true;
+ try{
+  let result;
+  if(editingId){
+   result=await db.from("recipes").update({name,data:payload,updated_at:new Date().toISOString()}).eq("id",editingId).eq("user_id",currentUser.id).select().single();
+  }else{
+   result=await db.from("recipes").insert({user_id:currentUser.id,name,data:payload}).select().single();
+  }
+  if(result.error)throw result.error;
+  editingId=result.data.id;
+  $("saveButton").textContent="Simpan Perubahan";
+  $("cancelEdit").classList.remove("hidden");
+  showSaveMessage("Resep berhasil disimpan ke cloud. Kamu bisa membukanya kembali dari menu Buka Resep.");
+  await loadRecipes();
+ }catch(e){showSaveMessage("Gagal menyimpan: "+(e.message||"Periksa koneksi dan konfigurasi database."),true);}
+ finally{$("saveButton").disabled=false;}
+}
+async function loadRecipes(){
+ if(!db||!currentUser)return;
+ const root=$("recipeList");root.textContent="Memuat resep...";
+ const {data,error}=await db.from("recipes").select("id,name,data,created_at,updated_at").order("updated_at",{ascending:false});
+ if(error){root.textContent="Gagal memuat resep: "+error.message;return;}
+ root.innerHTML="";
+ if(!data.length){const p=document.createElement("p");p.className="small";p.textContent="Belum ada resep tersimpan. Buat resep di menu Kalkulator HPP, lalu tekan Simpan Resep.";root.append(p);return;}
+ data.forEach(r=>{
+  const box=document.createElement("div");box.className="recipe";
+  const row=document.createElement("div");row.className="row";
+  const info=document.createElement("div");const name=document.createElement("div");name.className="recipe-name";name.textContent=r.name;
+  const meta=document.createElement("div");meta.className="recipe-meta";meta.textContent="Diperbarui: "+new Date(r.updated_at||r.created_at).toLocaleString("id-ID");
+  info.append(name,meta);
+  const open=document.createElement("button");open.className="secondary";open.textContent="Buka";open.onclick=()=>openRecipe(r);
+  row.append(info,open);box.append(row);
+  const actions=document.createElement("div");actions.className="row";actions.style.justifyContent="flex-end";actions.style.marginTop="9px";
+  const del=document.createElement("button");del.className="danger";del.textContent="Hapus";del.onclick=()=>deleteRecipe(r.id,r.name);
+  actions.append(del);box.append(actions);root.append(box);
+ });
+}
+function openRecipe(r){
+ editingId=r.id;$("namaResep").value=r.name;
+ ingredients=(r.data.ingredients||[]).map(x=>({...x,id:nextId++}));
+ if(!ingredients.length)ingredients=[{id:nextId++,nama:"",beli:"",harga:"",pakai:""}];
+ $("packing").value=r.data.packing??0;$("jumlah").value=r.data.jumlah??20;
+ $("feeShopee").value=r.data.feeShopee??24.67;$("feeFood").value=r.data.feeFood??25;
+ renderIngredients();$("saveButton").textContent="Simpan Perubahan";$("cancelEdit").classList.remove("hidden");
+ showSaveMessage("Resep dibuka. Kamu dapat mengubah data lalu tekan Simpan Perubahan.");
+ showPage("calc");window.scrollTo({top:0,behavior:"smooth"});
+}
+async function deleteRecipe(id,name){
+ if(!confirm('Hapus resep "'+name+'"?'))return;
+ const {error}=await db.from("recipes").delete().eq("id",id).eq("user_id",currentUser.id);
+ if(error){alert("Gagal menghapus: "+error.message);return;}
+ if(editingId===id)newRecipe();loadRecipes();
+}
+function newRecipe(){
+ editingId=null;$("namaResep").value="";$("packing").value=0;$("jumlah").value=20;
+ $("feeShopee").value=24.67;$("feeFood").value=25;ingredients=[];nextId=1;addIngredient();
+ $("saveButton").textContent="Simpan Resep ke Cloud";$("cancelEdit").classList.add("hidden");showSaveMessage("");
+}
+function resetForm(){if(!confirm("Kosongkan kalkulator? Resep yang sudah tersimpan tidak akan terhapus."))return;newRecipe();calculate();}
+async function copyResult(){
+ const d=calculate();let out="REKAP KALKULATOR HPP\n\n";
+ ingredients.forEach((x,i)=>{const c=Number(x.beli)>0?(Number(x.harga)/Number(x.beli))*Number(x.pakai):0;out+=(i+1)+". "+x.nama+": "+rupiah(c)+"\n";});
+ out+="\nTotal bahan dasar: "+rupiah(d.totalBahan)+"\nTenaga kerja: "+rupiah(d.tenaga)+"\nListrik, gas, air: "+rupiah(d.utilitas)+"\nPenyusutan: "+rupiah(d.penyusutan)+"\nTotal operasional: "+rupiah(d.totalOper)+"\nPacking: "+rupiah(d.packing)+"\nJumlah biaya: "+rupiah(d.total)+"\nJumlah produk: "+d.jumlah+"\nHPP per produk: "+rupiah(d.hpp)+"\n";
+ try{await navigator.clipboard.writeText(out);alert("Rekap berhasil disalin.");}catch(e){alert("Clipboard tidak tersedia di browser ini.");}
+}
+initSupabase();
 </script>
-
 </body>
 </html>

@@ -97,12 +97,12 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:18px}
 
  <div id="calcPage" class="hidden">
   <section class="card">
-   <h2>01. Bahan Dasar</h2><div class="sub">Tambahkan bahan satu per satu. Berat beli dan berat terpakai harus memakai satuan yang sama (gram dengan gram, atau ml dengan ml).</div>
+   <h2>Bahan Dasar</h2><div class="sub">Tambahkan bahan satu per satu. Berat beli dan berat terpakai harus memakai satuan yang sama (gram dengan gram, atau ml dengan ml).</div>
    <div id="ingredients"></div><button class="secondary" style="width:100%" onclick="addIngredient()">＋ Tambah bahan</button>
    <div class="result"><div class="result-row"><span>Total bahan dasar</span><strong id="totalBahan">Rp0</strong></div></div>
   </section>
   <section class="card">
-   <h2>02. Biaya Operasional</h2><div class="sub">Masing-masing otomatis dihitung 10% dari total bahan dasar.</div>
+   <h2>Biaya Operasional</h2><div class="sub">Masing-masing otomatis dihitung 10% dari total bahan dasar.</div>
    <div class="result">
     <div class="result-row"><span>Tenaga kerja (10%)</span><strong id="tenaga">Rp0</strong></div>
     <div class="result-row"><span>Listrik, gas, air (10%)</span><strong id="utilitas">Rp0</strong></div>
@@ -111,11 +111,11 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:18px}
    </div>
   </section>
   <section class="card">
-   <h2>03. Biaya Packing</h2><div class="sub">Masukkan total biaya packing untuk satu resep produksi.</div>
+   <h2>Biaya Packing</h2><div class="sub">Masukkan total biaya packing untuk satu resep produksi.</div>
    <div class="field"><label>Total biaya packing (Rp)</label><input id="packing" type="number" min="0" value="0" oninput="calculate()"></div>
   </section>
   <section class="card">
-   <h2>04. Hasil Produksi</h2>
+   <h2>Hasil Produksi</h2>
    <div class="field"><label>Jumlah produk yang dihasilkan (pcs/porsi)</label><input id="jumlah" type="number" min="0" value="20" oninput="calculate()"></div>
    <div class="result">
     <div class="result-row"><span>Total bahan dasar</span><strong id="rekapBahan">Rp0</strong></div>
@@ -126,7 +126,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:18px}
    <div class="hpp"><small>HPP AKHIR PER PRODUK</small><strong id="hpp">Rp0</strong><small>Total biaya produksi ÷ jumlah produk</small></div>
   </section>
   <section class="card">
-   <h2>05. Potongan Marketplace</h2><div class="sub">Persentase dapat diubah sesuai potongan aktual akun toko.</div>
+   <h2>Potongan Marketplace</h2><div class="sub">Persentase dapat diubah sesuai potongan aktual akun toko.</div>
    <div class="grid">
     <div class="field"><label>Shopee (%)</label><input id="feeShopee" type="number" min="0" max="99" step=".01" value="24.67" oninput="calculate()"></div>
     <div class="field"><label>ShopeeFood (%)</label><input id="feeFood" type="number" min="0" max="99" step=".01" value="25" oninput="calculate()"></div>
@@ -135,11 +135,11 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:18px}
    <p class="small">Harga marketplace dihitung agar penerimaan setelah potongan setara dengan harga offline. Belum termasuk diskon tambahan yang ditanggung penjual.</p>
   </section>
   <section class="card">
-   <h2>06. Rekomendasi Harga Jual</h2><div class="sub">Markup 30%, 50%, dan 70% dihitung dari HPP. Harga dibulatkan ke atas dalam kelipatan Rp100.</div>
+   <h2>Rekomendasi Harga Jual</h2><div class="sub">Markup 30%, 50%, dan 70% dihitung dari HPP. Harga dibulatkan ke atas dalam kelipatan Rp100.</div>
    <div class="tablewrap"><table><thead><tr><th>Markup</th><th>Offline</th><th>Shopee</th><th>ShopeeFood</th></tr></thead><tbody id="hargaTable"></tbody></table></div>
   </section>
   <section class="card">
-   <h2>07. Data Produk</h2><div class="sub">Bagian ini dibuat fleksibel untuk kuliner, fashion, reseller, toko sembako, kerajinan, dan berbagai jenis usaha.</div>
+   <h2>Data Produk</h2><div class="sub">Bagian ini dibuat fleksibel untuk kuliner, fashion, reseller, toko sembako, kerajinan, dan berbagai jenis usaha.</div>
    <div class="field"><label>Nama produk</label><input id="namaResep" placeholder="Contoh: Dimsum Ayam / Kaos Polos / Paket Sembako"></div>
    <div class="grid">
     <div class="field"><label>Kategori usaha</label><select id="kategoriProduk" style="width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fffdfa;color:var(--dark);font-size:14px"><option value="Kuliner">Kuliner</option><option value="Fashion">Fashion</option><option value="Reseller / Dropship">Reseller / Dropship</option><option value="Toko / Retail">Toko / Retail</option><option value="Kerajinan">Kerajinan</option><option value="Jasa">Jasa</option><option value="Kecantikan">Kecantikan</option><option value="Lainnya">Lainnya</option></select></div>
@@ -148,7 +148,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:18px}
    <div class="field"><label>Satuan jual</label><input id="satuanProduk" placeholder="Contoh: pcs, porsi, kg, pasang, paket, jasa"></div>
   </section>
   <section class="card">
-   <h2>08. Simpan Produk</h2><div class="sub">Simpan data produk dan perhitungan biaya ke akun cloud. Produk dapat dibuka dan diedit kembali.</div>
+   <h2>Simpan Produk</h2><div class="sub">Simpan data produk dan perhitungan biaya ke akun cloud. Produk dapat dibuka dan diedit kembali.</div>
    <div id="saveMessage" class="notice hidden"></div>
    <button class="primary" id="saveButton" onclick="saveRecipe()">Simpan Resep ke Cloud</button>
    <button class="outline hidden" id="cancelEdit" style="width:100%;margin-top:8px" onclick="newRecipe()">Batalkan edit / resep baru</button>

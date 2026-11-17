@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -26,7 +27,7 @@ button{border:0;border-radius:10px;padding:12px 14px;font-weight:bold;font-size:
 .small{font-size:11px;line-height:1.5;color:var(--muted)}.pill{font-size:10px;background:#e9f0e6;color:#526b4d;padding:5px 8px;border-radius:20px}
 footer{text-align:center;color:var(--muted);font-size:11px;padding:18px}
 @media(max-width:390px){.card{padding:14px}.grid{gap:7px}h1{font-size:27px}}
-.app-nav{grid-template-columns:1fr 1fr 1fr;margin-top:14px}
+.app-nav{grid-template-columns:1fr 1fr;margin-top:14px}
 .dashboard-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .metric{background:#f5eee5;border:1px solid var(--line);border-radius:13px;padding:14px;min-width:0}
 .metric span,.metric small{display:block;color:var(--muted);font-size:11px;line-height:1.4}
@@ -41,6 +42,13 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:18px}
 .feature-item b{font-size:12px}
 .feature-item small{font-size:10px;color:var(--muted);margin-top:3px}
 @media(max-width:360px){.quick-actions{grid-template-columns:1fr}.feature-item .pill{font-size:9px;padding:4px 6px}}
+.stock-summary{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0}
+.stock-stat{background:#f5eee5;border:1px solid var(--line);border-radius:12px;padding:12px}
+.stock-stat small{display:block;color:var(--muted);font-size:11px}.stock-stat strong{display:block;font:23px Georgia,serif;color:var(--brown);margin-top:6px}
+.stock-item{padding:13px 0;border-bottom:1px solid var(--line)}.stock-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}.stock-actions button{padding:9px 11px}
+.stock-low{color:#a34e42;background:#f8e9e5;padding:4px 8px;border-radius:20px;font-size:10px;font-weight:bold}
+.stock-ok{color:#526b4d;background:#eaf0e7;padding:4px 8px;border-radius:20px;font-size:10px;font-weight:bold}
+select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fffdfa;color:var(--dark);font-size:14px}
 </style>
 </head>
 <body>
@@ -65,6 +73,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:18px}
   <button id="dashboardTab" class="tab active" onclick="showPage('dashboard')">Dashboard</button>
   <button id="calcTab" class="tab" onclick="showPage('calc')">Kalkulator HPP</button>
   <button id="listTab" class="tab" onclick="showPage('list')">Produk & Resep</button>
+  <button id="stockTab" class="tab" onclick="showPage('stock')">Manajemen Stok</button>
  </nav>
 
  <div id="dashboardPage">
@@ -160,6 +169,48 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:18px}
    <div id="listMessage" class="notice hidden"></div><div id="recipeList"><p class="small">Memuat resep...</p></div>
   </section>
  </div>
+
+ <div id="stockPage" class="hidden">
+  <section class="card">
+   <h2>Tambah Barang</h2>
+   <div class="sub">Tambahkan persediaan barang, termasuk barang yang tidak terhubung dengan resep atau HPP.</div>
+   <div class="field"><label>Nama barang</label><input id="stockName" placeholder="Contoh: Stik es, plastik, tepung"></div>
+   <div class="grid">
+    <div class="field"><label>Kategori</label><input id="stockCategory" placeholder="Contoh: Bahan baku"></div>
+    <div class="field"><label>Kode / SKU</label><input id="stockSku" placeholder="Opsional"></div>
+    <div class="field"><label>Satuan</label><input id="stockUnit" placeholder="Contoh: pcs, kg, pack"></div>
+    <div class="field"><label>Stok awal</label><input id="stockOpening" type="number" min="0" step="0.01" value="0"></div>
+   </div>
+   <div class="field"><label>Batas minimum stok</label><input id="stockMinimum" type="number" min="0" step="0.01" value="0"></div>
+   <button id="addStockButton" class="primary" onclick="addStockItem()">Tambah barang</button>
+   <div id="stockMessage" class="notice hidden"></div>
+  </section>
+  <section class="card">
+   <h2>Ringkasan Stok</h2>
+   <div class="stock-summary">
+    <div class="stock-stat"><small>Jumlah jenis barang</small><strong id="stockCount">0</strong></div>
+    <div class="stock-stat"><small>Stok menipis / mencapai minimum</small><strong id="lowStockCount">0</strong></div>
+   </div>
+   <h2>Daftar Persediaan</h2>
+   <div id="stockList" class="sub">Memuat stok...</div>
+  </section>
+  <section class="card">
+   <h2>Catat Penjualan</h2>
+   <div class="sub">Penjualan yang dicatat di sini akan otomatis mengurangi stok barang yang dipilih.</div>
+   <div class="field"><label>Barang</label><select id="saleItem"><option value="">Pilih barang</option></select></div>
+   <div class="grid">
+    <div class="field"><label>Jumlah terjual</label><input id="saleQty" type="number" min="0.01" step="0.01" placeholder="Contoh: 2"></div>
+    <div class="field"><label>Harga jual per satuan (Rp)</label><input id="salePrice" type="number" min="0" step="1" placeholder="Contoh: 15000"></div>
+   </div>
+   <div class="field"><label>Catatan</label><input id="saleNote" placeholder="Opsional"></div>
+   <button id="saleButton" class="primary" onclick="recordSale()">Simpan penjualan & kurangi stok</button>
+  </section>
+  <section class="card">
+   <h2>Riwayat Pergerakan Stok</h2>
+   <div class="sub">Menampilkan hingga 30 aktivitas stok terbaru.</div>
+   <div id="stockHistory" class="sub">Memuat riwayat...</div>
+  </section>
+ </div>
 </div>
 <footer>USAHAKU PRO • MANAJEMEN USAHA</footer>
 </main>
@@ -248,10 +299,13 @@ function showPage(page){
  $("dashboardPage").classList.toggle("hidden",page!=="dashboard");
  $("calcPage").classList.toggle("hidden",page!=="calc");
  $("listPage").classList.toggle("hidden",page!=="list");
+ $("stockPage").classList.toggle("hidden",page!=="stock");
  $("dashboardTab").classList.toggle("active",page==="dashboard");
  $("calcTab").classList.toggle("active",page==="calc");
  $("listTab").classList.toggle("active",page==="list");
+ $("stockTab").classList.toggle("active",page==="stock");
  if(page==="list")loadRecipes();
+ if(page==="stock")loadStock();
 }
 function addIngredient(data={}){
  ingredients.push({id:nextId++,nama:data.nama||"",beli:data.beli??"",harga:data.harga??"",pakai:data.pakai??""});
@@ -327,7 +381,7 @@ async function saveRecipe(){
  const name=$("namaResep").value.trim();
  if(!name){showSaveMessage("Isi nama resep terlebih dahulu.",true);return;}
  if(!num("jumlah")){showSaveMessage("Jumlah produk harus lebih dari 0.",true);return;}
- const payload=recipePayload();const summary=calculate();
+ const payload=recipePayload();calculate();
  $("saveButton").disabled=true;
  try{
   let result;
@@ -404,6 +458,77 @@ async function copyResult(){
  out+="\nTotal bahan dasar: "+rupiah(d.totalBahan)+"\nTenaga kerja: "+rupiah(d.tenaga)+"\nListrik, gas, air: "+rupiah(d.utilitas)+"\nPenyusutan: "+rupiah(d.penyusutan)+"\nTotal operasional: "+rupiah(d.totalOper)+"\nPacking: "+rupiah(d.packing)+"\nJumlah biaya: "+rupiah(d.total)+"\nJumlah produk: "+d.jumlah+"\nHPP per produk: "+rupiah(d.hpp)+"\n";
  try{await navigator.clipboard.writeText(out);alert("Rekap berhasil disalin.");}catch(e){alert("Clipboard tidak tersedia di browser ini.");}
 }
+
+function stockMsg(t,err=false){const e=$("stockMessage");e.textContent=t;e.className=t?"notice"+(err?" error":""):"notice hidden";}
+async function addStockItem(){
+ const name=$("stockName").value.trim(),unit=$("stockUnit").value.trim(),opening=Number($("stockOpening").value),minimum=Number($("stockMinimum").value);
+ if(!name||!unit||!Number.isFinite(opening)||opening<0||!Number.isFinite(minimum)||minimum<0){stockMsg("Isi nama, satuan, stok awal, dan minimum dengan benar.",true);return;}
+ const b=$("addStockButton");b.disabled=true;
+ try{
+  const {data,error}=await db.from("inventory_items").insert({user_id:currentUser.id,name,category:$("stockCategory").value.trim()||"Umum",sku:$("stockSku").value.trim()||null,unit,quantity:0,min_quantity:minimum}).select().single();
+  if(error)throw error;
+  if(opening>0){const r=await db.rpc("add_stock_movement",{p_item_id:data.id,p_movement_type:"in",p_quantity:opening,p_note:"Stok awal"});if(r.error)throw r.error;}
+  ["stockName","stockCategory","stockSku","stockUnit"].forEach(x=>$(x).value="");$("stockOpening").value=0;$("stockMinimum").value=0;
+  stockMsg("Barang berhasil ditambahkan.");await loadStock();
+ }catch(e){stockMsg("Gagal menambah barang: "+e.message,true);}finally{b.disabled=false;}
+}
+async function loadStock(){
+ if(!db||!currentUser)return;
+ $("stockList").textContent="Memuat...";$("stockHistory").textContent="Memuat...";
+ const {data,error}=await db.from("inventory_items").select("*").order("name");
+ if(error){$("stockList").textContent="Gagal: "+error.message;return;}
+ $("stockCount").textContent=data.length;$("lowStockCount").textContent=data.filter(x=>Number(x.quantity)<=Number(x.min_quantity)).length;
+ const sel=$("saleItem");sel.innerHTML='<option value="">Pilih barang</option>';
+ const root=$("stockList");root.innerHTML="";
+ if(!data.length)root.textContent="Belum ada barang. Tambahkan barang melalui formulir di atas.";
+ data.forEach(item=>{
+  const op=document.createElement("option");op.value=item.id;op.textContent=item.name+" — "+item.quantity+" "+item.unit;sel.append(op);
+  const box=document.createElement("div");box.className="stock-item";const row=document.createElement("div");row.className="row";
+  const info=document.createElement("div");const nm=document.createElement("strong");nm.textContent=item.name;const meta=document.createElement("div");meta.className="recipe-meta";meta.textContent=(item.category||"Umum")+(item.sku?" • "+item.sku:"")+" • Minimum "+item.min_quantity+" "+item.unit;info.append(nm,meta);
+  const badge=document.createElement("span");badge.className=Number(item.quantity)<=Number(item.min_quantity)?"stock-low":"stock-ok";badge.textContent=Number(item.quantity)<=Number(item.min_quantity)?"Stok menipis":"Stok aman";row.append(info,badge);box.append(row);
+  const qty=document.createElement("p");qty.textContent=item.quantity+" "+item.unit+" tersedia";box.append(qty);
+  const actions=document.createElement("div");actions.className="stock-actions";
+  [["＋ Stok masuk","secondary","in"],["− Stok keluar","outline","out"]].forEach(([label,cls,type])=>{const b=document.createElement("button");b.className=cls;b.textContent=label;b.onclick=()=>changeStock(item,type);actions.append(b);});
+  const edit=document.createElement("button");edit.className="outline";edit.textContent="Edit";edit.onclick=()=>editStockItem(item);actions.append(edit);
+  const del=document.createElement("button");del.className="danger";del.textContent="Hapus";del.onclick=()=>deleteStockItem(item);actions.append(del);
+  box.append(actions);root.append(box);
+ });
+ const h=await db.from("inventory_movements").select("id,movement_type,quantity,note,created_at,inventory_items(name,unit)").order("created_at",{ascending:false}).limit(30);
+ const hr=$("stockHistory");hr.innerHTML="";
+ if(h.error){hr.textContent="Gagal memuat riwayat: "+h.error.message;return;}
+ if(!h.data.length)hr.textContent="Belum ada riwayat stok.";
+ h.data.forEach(m=>{const d=document.createElement("div");d.className="recipe";const t=document.createElement("strong");t.textContent=(m.inventory_items?.name||"Barang")+" — "+({in:"Stok masuk",out:"Stok keluar",sale:"Penjualan"}[m.movement_type]||m.movement_type);const meta=document.createElement("div");meta.className="recipe-meta";meta.textContent=(m.movement_type==="in"?"+":"−")+m.quantity+" "+(m.inventory_items?.unit||"")+" • "+(m.note||"")+" • "+new Date(m.created_at).toLocaleString("id-ID");d.append(t,meta);hr.append(d);});
+}
+async function changeStock(item,type){
+ const raw=prompt((type==="in"?"STOK MASUK":"STOK KELUAR")+" — "+item.name+"\nJumlah ("+item.unit+"):");if(raw===null)return;
+ const qty=Number(raw);if(!Number.isFinite(qty)||qty<=0){alert("Jumlah harus lebih dari 0.");return;}
+ const note=prompt("Catatan (opsional):")||"Penyesuaian stok";
+ const {error}=await db.rpc("add_stock_movement",{p_item_id:item.id,p_movement_type:type,p_quantity:qty,p_note:note});
+ if(error){alert("Gagal: "+error.message);return;}stockMsg("Stok berhasil diperbarui.");loadStock();
+}
+async function editStockItem(item){
+ const name=prompt("Nama barang:",item.name);if(name===null)return;
+ const minimum=Number(prompt("Batas minimum:",item.min_quantity));if(!Number.isFinite(minimum)||minimum<0){alert("Batas minimum tidak valid.");return;}
+ const category=prompt("Kategori:",item.category||"Umum");if(category===null)return;
+ const sku=prompt("Kode / SKU:",item.sku||"");if(sku===null)return;
+ const unit=prompt("Satuan:",item.unit);if(unit===null||!unit.trim())return;
+ const {error}=await db.from("inventory_items").update({name:name.trim(),min_quantity:minimum,category:category.trim(),sku:sku.trim()||null,unit:unit.trim()}).eq("id",item.id);
+ if(error){alert("Gagal mengubah: "+error.message);return;}loadStock();
+}
+async function deleteStockItem(item){
+ if(!confirm('Hapus "'+item.name+'"?'))return;
+ const {error}=await db.from("inventory_items").delete().eq("id",item.id);
+ if(error){alert("Barang tidak dapat dihapus: "+error.message);return;}loadStock();
+}
+async function recordSale(){
+ const id=$("saleItem").value,qty=Number($("saleQty").value),price=Number($("salePrice").value);
+ if(!id||!Number.isFinite(qty)||qty<=0||!Number.isFinite(price)||price<0){stockMsg("Pilih barang dan isi jumlah serta harga dengan benar.",true);return;}
+ const b=$("saleButton");b.disabled=true;
+ try{const {error}=await db.rpc("record_inventory_sale",{p_item_id:id,p_quantity:qty,p_unit_price:price,p_note:$("saleNote").value.trim()||"Penjualan"});if(error)throw error;
+ $("saleQty").value="";$("salePrice").value="";$("saleNote").value="";stockMsg("Penjualan dicatat. Stok otomatis berkurang.");await loadStock();
+ }catch(e){stockMsg("Penjualan gagal: "+e.message,true);}finally{b.disabled=false;}
+}
+
 initSupabase();
 </script>
 </body>
